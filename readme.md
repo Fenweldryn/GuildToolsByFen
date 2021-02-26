@@ -12,7 +12,7 @@ Inspired by and based on Advanced Member Tooltip Addon.
 <br/>
 
 ## How to get old data
-If you have just installed this addon and need older data than that available in LibHistoire you can request more data from the guild history interface, hotkey E (bottom of the screen) and click refresh on LibHistoire interface. If you need a lot of old data you will have to click show more a lot. Remember to click refresh or else LibHistoire will not refresh the logs.
+If you have just installed this addon If you have just installed this addon and only a few members have the tooltip you need older data than that available in LibHistoire. You can request more data from the guild history interface, hotkey E (bottom of the screen) and click refresh on LibHistoire interface. If you need a lot of old data you will have to click show more a lot. Remember to click refresh or else LibHistoire will not refresh the logs.
 
 [prints of where to click](https://imgur.com/a/FoeKpnw)
 <br/>
