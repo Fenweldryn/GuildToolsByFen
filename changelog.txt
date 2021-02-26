@@ -1,0 +1,5 @@
+0.1.1
+- fixed some member not showing despite having recently joined
+
+0.1.0
+- Initial Release
