@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.1.1
+-- Guild Tools By Fen v0.1.2
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -108,11 +108,10 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     local num, str
 
     if (history[guildId] ~= nil) then
-        d(history[guildId])
         if (history[guildId].joined[string.lower(displayName)] ~= nil) then
             tooltip = tooltip .. "\n\n"            
-            num, str = secToTime(timeStamp - history[guildId].joined[displayName].timeJoined)
-            tooltip = tooltip .. string.format(langStrings[lang]["member"], "", num, str)
+            num, str = secToTime(timeStamp - history[guildId].joined[string.lower(displayName)].timeJoined)
+            tooltip = tooltip .. string.format(langStrings[lang].member, "", num, str)
         end
     end
       
