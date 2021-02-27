@@ -1,3 +1,6 @@
+0.1.3
+- fixed wrong event tracking. Was tracking guild invite events instead of guild join events. Oops.
+
 0.1.2
 - fixed some other members not showing the days count
 

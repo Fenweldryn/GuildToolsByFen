@@ -2,9 +2,9 @@
 ## Author: Fenweldryn
 ## APIVersion: 100033 
 ## Description: show how long ago a guild member joined the guild
-## Version: 0.1.2
-## SavedVariables: guildToolsByFen
-## DependsOn: LibHistoire LibSlashCommander
+## Version: 0.1.3
+## SavedVariables: GuildToolsByFen
+## DependsOn: LibHistoire LibSlashCommander LibSavedVars
 
 GuildToolsByFen.lua
 
