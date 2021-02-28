@@ -1,3 +1,6 @@
+0.2.0
+- Added gold deposited and withdrew tooltip
+
 0.1.3
 - fixed wrong event tracking. Was tracking guild invite events instead of guild join events. Oops.
 
