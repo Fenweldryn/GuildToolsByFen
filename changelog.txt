@@ -1,3 +1,6 @@
+0.3.0
+- Gold deposited and withdrew are now grouped by current month, current week and current day.
+
 0.2.0
 - Added gold deposited and withdrew tooltip
 
