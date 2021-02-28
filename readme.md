@@ -1,5 +1,6 @@
 # Guild Tools By Fen
-This is going to be a toolkit to help manage guilds.
+This is an addon for the game Elder Scrolls Online. <br>
+This addon can be downloaded using [Minion Addon Manager](https://minion.mmoui.com/) or at [ESO UI website](https://www.esoui.com/downloads/info2939-GuildToolsByFen.html)
 
 ## What does it do
 * how long ago a guild member joined the guild in a tooltip when you hover the guild member name.
