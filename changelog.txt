@@ -1,3 +1,6 @@
+0.3.3
+- removed debugging line left behind by mistake which would only show gold for my guild. Oops.
+
 0.3.2
 - changed gold deposits and withdrawals from this month to last 30 days
 

@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.3.2
+-- Guild Tools By Fen v0.3.3
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -199,7 +199,6 @@ local function storeGuildGoldDeposit(guildId, user, gold, eventTime)
     
     if(date.year ~= os.date('*t', os.time()).year) then return end
     if(date.month ~= os.date('*t', os.time()).month) then return end
-    if(guildId ~= 361) then return end
 
     if (savedData.history[guildId][string.lower(user)].deposits == nil) then 
         savedData.history[guildId][string.lower(user)].deposits = {
