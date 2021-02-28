@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.3.0
+-- Guild Tools By Fen v0.3.1
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -33,7 +33,7 @@ local langStrings =
         minute      = "minute",
         hour        = "hour",
         day         = "day",
-        thisMonth   = "this month: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        thisMonth   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
     },
@@ -47,7 +47,7 @@ local langStrings =
         minute      = "minute",
         hour        = "heure",
         day         = "jour",
-        thisMonth   = "this month: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        thisMonth   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
     },
@@ -61,7 +61,7 @@ local langStrings =
         minute      = "Minute",
         hour        = "Stunde",
         day         = "Tag",
-        thisMonth   = "this month: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        thisMonth   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
     }
@@ -224,14 +224,6 @@ local function storeGuildGoldDeposit(guildId, user, gold, eventTime)
         date.tradeWeek = date.yWeek - 1
     end    
     
-    d('date ' .. date.wday)
-    d('today ' .. today.wday)
-    -- d(date.day .. '/' .. date.month .. '/' .. date.year);
-    -- d(today.day .. '/' .. today.month .. '/' .. today.year);
-    -- d('date: ' .. date.tradeWeek .. ' ' .. date.yWeek .. ' ' .. date.day .. ' ' .. date.hour)
-    -- d('today: ' .. today.tradeWeek .. ' ' .. today.yWeek .. ' ' .. today.day .. ' ' .. today.hour)
-
-
     if (date.tradeWeek == today.tradeWeek) then
         savedData.history[guildId][string.lower(user)].deposits.thisWeek = gold + savedData.history[guildId][string.lower(user)].deposits.thisWeek
     end
@@ -245,15 +237,16 @@ local function storeGuildGoldWithdrawal(guildId, user, gold, eventTime)
     createGuild(guildId)   
     createUser(user, guildId)
     date = os.date("*t", eventTime)
-    date.tradeWeek = nil;
     date.yWeek = os.date('%u', eventTime);
+    date.tradeWeek = date.yWeek;
     today = os.date("*t")
-    today.tradeWeek = nil;
     today.yWeek = os.date('%u', os.time());
+    today.tradeWeek = today.yWeek;
     
     if(date.year ~= os.date('*t', os.time()).year) then return end
     if(date.month ~= os.date('*t', os.time()).month) then return end
-    
+    if(guildId ~= 361) then return end
+
     if (savedData.history[guildId][string.lower(user)].withdrawals == nil) then 
         savedData.history[guildId][string.lower(user)].withdrawals = {
             thisMonth = 0,
@@ -269,14 +262,14 @@ local function storeGuildGoldWithdrawal(guildId, user, gold, eventTime)
 
     -- this week. 
     -- checking if the event ocurred on the current trade week that starts tuesdays at 2:01pm
-    if(today.wday <= 2 and today.hour < 14) then
+    if(today.wday == 1 or (today.wday == 2 and today.hour < 14)) then
         today.tradeWeek = today.yWeek - 1
     end
 
-    if (date.wday <= 2 and date.hour < 14) then
+    if(date.wday == 1 or (date.wday == 2 and date.hour < 14)) then
         date.tradeWeek = date.yWeek - 1
     end    
-
+    
     if (date.tradeWeek == today.tradeWeek) then
         savedData.history[guildId][string.lower(user)].withdrawals.thisWeek = gold + savedData.history[guildId][string.lower(user)].withdrawals.thisWeek
     end

@@ -1,3 +1,6 @@
+0.3.1
+- fixed withdrawal not showing current week gold properly
+
 0.3.0
 - Gold deposited and withdrew are now grouped by current month, current week and current day.
 
