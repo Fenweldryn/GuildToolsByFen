@@ -15,8 +15,7 @@
 local LSC = LibSlashCommander
 local name = "GuildToolsByFen"
 local savedData = {
-    history = {},
-    allUsers = {}
+    history = {},    
 }
 local scanGuildIndex = nil
 local org_ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter = ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter
@@ -27,9 +26,10 @@ local langStrings =
     en =
     {
         member      = "Member for %s%i %s",
-        depositions = "Deposits",
+        deposits    = "Deposits",
         withdrawals = "Withdrawals",
-        total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (over %i %s)",
+        total       = "Total tax: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        -- total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (over %i %s)",
         last        = "Last: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (%i %s ago)",
         minute      = "minute",
         hour        = "hour",
@@ -38,9 +38,10 @@ local langStrings =
 	fr =
     {
         member      = "Membre pour %s%i %s",
-        depositions = "Dépôts",
+        deposits    = "Dépôts",
         withdrawals = "Retraits",
-        total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (sur %i %s)",
+        total       = "Total tax: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        -- total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (sur %i %s)",
         last        = "Dernier: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (%i %s depuis)",
         minute      = "minute",
         hour        = "heure",
@@ -49,9 +50,10 @@ local langStrings =
     de =
     {
         member      = "Mitglied seit %s%i %s",
-        depositions = "Einzahlungen",
+        deposits    = "Einzahlungen",
         withdrawals = "Auszahlungen",
-        total       = "Gesamt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (innerhalb von %i %s)",
+        total       = "Gesamt tax: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        -- total       = "Gesamt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (innerhalb von %i %s)",
         last        = "Zuletzt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (vor %i %s)",
         minute      = "Minute",
         hour        = "Stunde",
@@ -110,33 +112,94 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     local tooltip = data.characterName
     local num, str
 
-    if (savedData.history[guildId] ~= nil) then
-        if (savedData.history[guildId].joined[string.lower(displayName)] ~= nil) then
-            tooltip = tooltip .. "\n\n"            
-            num, str = secToTime(timeStamp - savedData.history[guildId].joined[string.lower(displayName)].timeJoined)
-            tooltip = tooltip .. string.format(langStrings[lang].member, "", num, str)
-        end
+    if (savedData.history[guildId] == nil) then return end
+    if (savedData.history[guildId][string.lower(displayName)] == nil) then return end
+
+    if (savedData.history[guildId][string.lower(displayName)].timeJoined) then
+        tooltip = tooltip .. "\n\n"            
+        num, str = secToTime(timeStamp - savedData.history[guildId][string.lower(displayName)].timeJoined)
+        tooltip = tooltip .. string.format(langStrings[lang].member, "", num, str)
+    end
+
+    if (savedData.history[guildId][string.lower(displayName)].deposits) then
+        tooltip = tooltip .. "\n\n"    
+        deposits = savedData.history[guildId][string.lower(displayName)].deposits
+        tooltip = tooltip .. langStrings[lang].deposits .. ": " .. deposits .. " |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
+    end
+
+    if (savedData.history[guildId][string.lower(displayName)].withdrawals) then
+        tooltip = tooltip .. "\n"    
+        withdrawals = savedData.history[guildId][string.lower(displayName)].withdrawals
+        tooltip = tooltip .. langStrings[lang].withdrawals .. ": " .. withdrawals .. " |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
     end
       
     InitializeTooltip(InformationTooltip, control, BOTTOM, 0, 0, TOPCENTER)
     SetTooltipText(InformationTooltip, tooltip)
 end
 
+function ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit(control)
+    ClearTooltip(InformationTooltip)
+
+    org_ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit(control)
+end
+
+local function createGuild(guildId)
+    if (savedData.history[guildId] == nil) then
+        savedData.history[guildId] = {}
+    end 
+end
+
+local function createUser(user, guildId)
+    if (savedData.history[guildId][string.lower(user)] == nil) then  
+        savedData.history[guildId][string.lower(user)] = {}
+    end
+end
+
+local function storeGuildJoins(guildId, user, eventTime)
+    createGuild(guildId)   
+    createUser(user, guildId)
+
+    savedData.history[guildId][string.lower(user)].timeJoined = eventTime    
+end
+
+local function storeGuildGoldDeposit(guildId, user, gold, eventTime)  
+    createGuild(guildId)   
+    createUser(user, guildId)
+
+    if (savedData.history[guildId][string.lower(user)].deposits == 0 or savedData.history[guildId][string.lower(user)].deposits == nil) then
+        savedData.history[guildId][string.lower(user)].deposits = gold
+    else
+        savedData.history[guildId][string.lower(user)].deposits = gold + savedData.history[guildId][string.lower(user)].deposits
+    end
+end
+
+local function storeGuildGoldWithdrawal(guildId, user, gold, eventTime)  
+    createGuild(guildId)   
+    createUser(user, guildId)
+
+    if (savedData.history[guildId][string.lower(user)].withdrawals == 0 or savedData.history[guildId][string.lower(user)].withdrawals == nil) then
+        savedData.history[guildId][string.lower(user)].withdrawals = gold
+    else
+        savedData.history[guildId][string.lower(user)].withdrawals = gold + savedData.history[guildId][string.lower(user)].withdrawals
+    end
+end
+
 LibHistoire:RegisterCallback(LibHistoire.callback.INITIALIZED, function()
     local function SetUpListener(guildId, category)
         local listener = LibHistoire:CreateGuildHistoryListener(guildId, category)
         listener:SetEventCallback(function(eventType, eventId, eventTime, param1, param2, param3, param4, param5, param6)            
-            -- if(guildId == 361) then
-            --     d(eventType .." ".. eventId .." ".. eventTime .." ".. (param1 or "") .." ".. (param2 or "") .." ".. (param3 or "") .." ".. (param4 or "") .." ".. (param5 or "") .." ".. (param6 or ""))
-            -- end
-            if(eventType == 7) then
-                savedData.allUsers[#savedData.allUsers+1] = param1
-                if (savedData.history[guildId] == nil) then
-                    savedData.history[guildId] = {}
-                    savedData.history[guildId].joined = {}
-                end 
-                savedData.history[guildId].joined[string.lower(param1)] = {}
-                savedData.history[guildId].joined[string.lower(param1)].timeJoined = eventTime            
+           
+            if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then
+                storeGuildJoins(guildId, param1, eventTime)
+            end
+            if(eventType == GUILD_EVENT_BANKGOLD_ADDED and category == GUILD_HISTORY_BANK) then
+                -- if(guildId == 361) then
+                --     d(eventType .." ".. eventId .." ".. eventTime .." ".. (param1 or "-") .." ".. (param2 or "-") .." ".. (param3 or "-") .." ".. (param4 or "-") .." ".. (param5 or "-") .." ".. (param6 or "-"))
+                -- end
+                storeGuildGoldDeposit(guildId, param1, param2, eventTime)                          
+            end
+            if(eventType == GUILD_EVENT_BANKGOLD_REMOVED and category == GUILD_HISTORY_BANK) then
+                storeGuildGoldWithdrawal(guildId, param1, param2, eventTime)                          
             end
         end)
         listener:Start()
@@ -144,6 +207,7 @@ LibHistoire:RegisterCallback(LibHistoire.callback.INITIALIZED, function()
 
     for i = 1, GetNumGuilds() do
         SetUpListener(GetGuildId(i), GUILD_HISTORY_GENERAL)
+        SetUpListener(GetGuildId(i), GUILD_HISTORY_BANK)
     end
 end)
 
@@ -153,7 +217,7 @@ function onAddOnLoaded(eventCode, addonName)
     end
     EVENT_MANAGER:UnregisterForEvent(name, EVENT_ADD_ON_LOADED)
 
-    -- savedData = ZO_SavedVars:NewAccountWide(name, nil, nil, savedData)
+    savedData = ZO_SavedVars:NewAccountWide(name, nil, nil, savedData)
 end
 
 EVENT_MANAGER:RegisterForEvent(name, EVENT_ADD_ON_LOADED, onAddOnLoaded)
