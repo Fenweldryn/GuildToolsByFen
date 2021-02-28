@@ -1,3 +1,6 @@
+0.3.2
+- changed gold deposits and withdrawals from this month to last 30 days
+
 0.3.1
 - fixed withdrawal not showing current week gold properly
 

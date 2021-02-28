@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.3.1
+-- Guild Tools By Fen v0.3.2
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -209,12 +209,12 @@ local function storeGuildGoldDeposit(guildId, user, gold, eventTime)
         }
     end
 
-    -- this month
-    if(date.month == os.date('*t', os.time()).month) then 
+    -- last 30 days
+    if(eventTime >= (os.time() - 60*60*24*30)) then 
         savedData.history[guildId][string.lower(user)].deposits.thisMonth = gold + savedData.history[guildId][string.lower(user)].deposits.thisMonth
     end
 
-    -- this week. 
+    -- this week
     -- checking if the event ocurred on the current trade week that starts tuesdays at 2:01pm
     if(today.wday == 1 or (today.wday == 2 and today.hour < 14)) then
         today.tradeWeek = today.yWeek - 1
@@ -255,12 +255,12 @@ local function storeGuildGoldWithdrawal(guildId, user, gold, eventTime)
         }
     end
 
-    -- this month
-    if(date.month == os.date('*t', os.time()).month) then 
+    -- last 30 days
+    if(eventTime >= (os.time() - 60*60*24*30)) then 
         savedData.history[guildId][string.lower(user)].withdrawals.thisMonth = gold + savedData.history[guildId][string.lower(user)].withdrawals.thisMonth
     end
 
-    -- this week. 
+    -- this week
     -- checking if the event ocurred on the current trade week that starts tuesdays at 2:01pm
     if(today.wday == 1 or (today.wday == 2 and today.hour < 14)) then
         today.tradeWeek = today.yWeek - 1
