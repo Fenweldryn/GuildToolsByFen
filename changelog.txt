@@ -1,3 +1,7 @@
+0.3.4
+- fixed gold not showing after new month started
+- code cleanup
+
 0.3.3
 - removed debugging line left behind by mistake which would only show gold for my guild. Oops.
 

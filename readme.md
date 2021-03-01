@@ -21,3 +21,4 @@ If you have just installed this addon If you have just installed this addon and 
 ## Requirements
 * LibHistoire
 * LibSlashCommander
+* LibCustomMenu

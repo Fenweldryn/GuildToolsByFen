@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.3.3
+-- Guild Tools By Fen v0.3.4
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -25,45 +25,45 @@ local langStrings =
 {
     en =
     {
-        member      = "Member for %s%i %s",
-        deposits    = "Deposits",
-        withdrawals = "Withdrawals",
-        total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (over %i %s)",
-        last        = "Last: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (%i %s ago)",
-        minute      = "minute",
-        hour        = "hour",
-        day         = "day",
-        thisMonth   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
+        member                       = "Member for %s%i %s",
+        GUILD_EVENT_BANKGOLD_ADDED   = "Deposits",
+        GUILD_EVENT_BANKGOLD_REMOVED = "Withdrawals",
+        total                        = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (over %i %s)",
+        last                         = "Last: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (%i %s ago)",
+        minute                       = "minute",
+        hour                         = "hour",
+        day                          = "day",
+        last30Days                       = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        thisWeek                     = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        today                        = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
     },
 	fr =
     {
-        member      = "Membre pour %s%i %s",
-        deposits    = "Dépôts",
-        withdrawals = "Retraits",
-        total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (sur %i %s)",
-        last        = "Dernier: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (%i %s depuis)",
-        minute      = "minute",
-        hour        = "heure",
-        day         = "jour",
-        thisMonth   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
+        member                       = "Membre pour %s%i %s",
+        GUILD_EVENT_BANKGOLD_ADDED   = "Dépôts",
+        GUILD_EVENT_BANKGOLD_REMOVED = "Retraits",
+        total                        = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (sur %i %s)",
+        last                         = "Dernier: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (%i %s depuis)",
+        minute                       = "minute",
+        hour                         = "heure",
+        day                          = "jour",
+        last30Days                   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        thisWeek                     = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        today                        = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
     },
     de =
     {
-        member      = "Mitglied seit %s%i %s",
-        deposits    = "Einzahlungen",
-        withdrawals = "Auszahlungen",
-        total       = "Gesamt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (innerhalb von %i %s)",
-        last        = "Zuletzt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (vor %i %s)",
-        minute      = "Minute",
-        hour        = "Stunde",
-        day         = "Tag",
-        thisMonth   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
+        member                       = "Mitglied seit %s%i %s",
+        GUILD_EVENT_BANKGOLD_ADDED   = "Einzahlungen",
+        GUILD_EVENT_BANKGOLD_REMOVED = "Auszahlungen",
+        total                        = "Gesamt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (innerhalb von %i %s)",
+        last                         = "Zuletzt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (vor %i %s)",
+        minute                       = "Minute",
+        hour                         = "Stunde",
+        day                          = "Tag",
+        last30Days                   = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        thisWeek                     = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        today                        = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
     }
 }
 
@@ -129,11 +129,10 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     end
 
     -- bank gold transactions
-
     if (savedData.history[guildId][string.lower(displayName)].deposits) then
         tooltip = tooltip .. "\n\n" .. 'BANK GOLD DEPOSITS' .. '\n'
-        depositsThisMonth = savedData.history[guildId][string.lower(displayName)].deposits.thisMonth
-        tooltip = tooltip .. string.format(langStrings[lang].thisMonth, depositsThisMonth)
+        depositsLast30Days = savedData.history[guildId][string.lower(displayName)].deposits.last30Days
+        tooltip = tooltip .. string.format(langStrings[lang].last30Days, depositsLast30Days)
         
         tooltip = tooltip .. "\n"           
         depositsThisWeek = savedData.history[guildId][string.lower(displayName)].deposits.thisWeek
@@ -146,8 +145,8 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
 
     if (savedData.history[guildId][string.lower(displayName)].withdrawals) then
        tooltip = tooltip .. "\n\n" .. 'BANK GOLD WITHDRAWALS' .. '\n'
-        withdrawalsThisMonth = savedData.history[guildId][string.lower(displayName)].withdrawals.thisMonth
-        tooltip = tooltip .. string.format(langStrings[lang].thisMonth, withdrawalsThisMonth)
+        withdrawalsLast30Days = savedData.history[guildId][string.lower(displayName)].withdrawals.last30Days
+        tooltip = tooltip .. string.format(langStrings[lang].last30Days, withdrawalsLast30Days)
         
         tooltip = tooltip .. "\n"           
         withdrawalsThisWeek = savedData.history[guildId][string.lower(displayName)].withdrawals.thisWeek
@@ -176,7 +175,21 @@ end
 
 local function createUser(user, guildId)
     if (savedData.history[guildId][string.lower(user)] == nil) then  
-        savedData.history[guildId][string.lower(user)] = {}
+        savedData.history[guildId][string.lower(user)] = {
+            timeJoined = nil,
+            deposits = {
+                last30Days = 0,
+                lastWeek = 0,
+                thisWeek = 0,
+                today = 0
+            },
+            withdrawals = {
+                last30Days = 0,
+                lastWeek = 0,
+                thisWeek = 0,
+                today = 0
+            }
+        }
     end
 end
 
@@ -187,7 +200,7 @@ local function storeGuildJoins(guildId, user, eventTime)
     savedData.history[guildId][string.lower(user)].timeJoined = eventTime    
 end
 
-local function storeGuildGoldDeposit(guildId, user, gold, eventTime)  
+local function storeGuildBankGoldTransactions(guildId, user, gold, event, eventTime)  
     createGuild(guildId)   
     createUser(user, guildId)
     date = os.date("*t", eventTime)
@@ -198,83 +211,37 @@ local function storeGuildGoldDeposit(guildId, user, gold, eventTime)
     today.tradeWeek = today.yWeek;
     
     if(date.year ~= os.date('*t', os.time()).year) then return end
-    if(date.month ~= os.date('*t', os.time()).month) then return end
-
-    if (savedData.history[guildId][string.lower(user)].deposits == nil) then 
-        savedData.history[guildId][string.lower(user)].deposits = {
-            thisMonth = 0,
-            thisWeek = 0,
-            today = 0
-        }
-    end
-
+    if(eventTime < (os.time() - 60*60*24*30)) then return end
+    
     -- last 30 days
     if(eventTime >= (os.time() - 60*60*24*30)) then 
-        savedData.history[guildId][string.lower(user)].deposits.thisMonth = gold + savedData.history[guildId][string.lower(user)].deposits.thisMonth
+        savedData.history[guildId][string.lower(user)][event].last30Days = gold + savedData.history[guildId][string.lower(user)][event].last30Days
     end
 
-    -- this week
-    -- checking if the event ocurred on the current trade week that starts tuesdays at 2:01pm
+    -- checking event ocurred and today's trade week that starts tuesdays at 2:01pm
     if(today.wday == 1 or (today.wday == 2 and today.hour < 14)) then
         today.tradeWeek = today.yWeek - 1
     end
-
     if(date.wday == 1 or (date.wday == 2 and date.hour < 14)) then
         date.tradeWeek = date.yWeek - 1
-    end    
-    
+    end        
     if (date.tradeWeek == today.tradeWeek) then
-        savedData.history[guildId][string.lower(user)].deposits.thisWeek = gold + savedData.history[guildId][string.lower(user)].deposits.thisWeek
-    end
-    
-    if (date.day == today.day) then
-        savedData.history[guildId][string.lower(user)].deposits.today = gold + savedData.history[guildId][string.lower(user)].deposits.today
-    end
-end
-
-local function storeGuildGoldWithdrawal(guildId, user, gold, eventTime)  
-    createGuild(guildId)   
-    createUser(user, guildId)
-    date = os.date("*t", eventTime)
-    date.yWeek = os.date('%u', eventTime);
-    date.tradeWeek = date.yWeek;
-    today = os.date("*t")
-    today.yWeek = os.date('%u', os.time());
-    today.tradeWeek = today.yWeek;
-    
-    if(date.year ~= os.date('*t', os.time()).year) then return end
-    if(date.month ~= os.date('*t', os.time()).month) then return end
-    if(guildId ~= 361) then return end
-
-    if (savedData.history[guildId][string.lower(user)].withdrawals == nil) then 
-        savedData.history[guildId][string.lower(user)].withdrawals = {
-            thisMonth = 0,
-            thisWeek = 0,
-            today = 0
-        }
+        savedData.history[guildId][string.lower(user)][event].thisWeek = gold + savedData.history[guildId][string.lower(user)][event].thisWeek
     end
 
-    -- last 30 days
-    if(eventTime >= (os.time() - 60*60*24*30)) then 
-        savedData.history[guildId][string.lower(user)].withdrawals.thisMonth = gold + savedData.history[guildId][string.lower(user)].withdrawals.thisMonth
+    -- last week
+    if (date.tradeWeek == (today.tradeWeek - 1)) then
+        savedData.history[guildId][string.lower(user)][event].lastWeek = gold + savedData.history[guildId][string.lower(user)][event].lastWeek
     end
 
     -- this week
-    -- checking if the event ocurred on the current trade week that starts tuesdays at 2:01pm
-    if(today.wday == 1 or (today.wday == 2 and today.hour < 14)) then
-        today.tradeWeek = today.yWeek - 1
-    end
-
-    if(date.wday == 1 or (date.wday == 2 and date.hour < 14)) then
-        date.tradeWeek = date.yWeek - 1
-    end    
-    
     if (date.tradeWeek == today.tradeWeek) then
-        savedData.history[guildId][string.lower(user)].withdrawals.thisWeek = gold + savedData.history[guildId][string.lower(user)].withdrawals.thisWeek
+        savedData.history[guildId][string.lower(user)][event].thisWeek = gold + savedData.history[guildId][string.lower(user)][event].thisWeek
     end
     
+    -- today
     if (date.day == today.day) then
-        savedData.history[guildId][string.lower(user)].withdrawals.today = gold + savedData.history[guildId][string.lower(user)].withdrawals.today
+        savedData.history[guildId][string.lower(user)][event].today = gold + savedData.history[guildId][string.lower(user)][event].today
     end
 end
 
@@ -286,14 +253,11 @@ LibHistoire:RegisterCallback(LibHistoire.callback.INITIALIZED, function()
             if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then
                 storeGuildJoins(guildId, param1, eventTime)
             end
-            if(eventType == GUILD_EVENT_BANKGOLD_ADDED and category == GUILD_HISTORY_BANK) then
-                -- if(guildId == 361) then
-                --     d(eventType .." ".. eventId .." ".. eventTime .." ".. (param1 or "-") .." ".. (param2 or "-") .." ".. (param3 or "-") .." ".. (param4 or "-") .." ".. (param5 or "-") .." ".. (param6 or "-"))
-                -- end
-                storeGuildGoldDeposit(guildId, param1, param2, eventTime)                          
+            if(eventType == GUILD_EVENT_BANKGOLD_ADDED and category == GUILD_HISTORY_BANK) then                
+                storeGuildBankGoldTransactions(guildId, param1, param2, 'deposits', eventTime)                          
             end
             if(eventType == GUILD_EVENT_BANKGOLD_REMOVED and category == GUILD_HISTORY_BANK) then
-                storeGuildGoldWithdrawal(guildId, param1, param2, eventTime)                          
+                storeGuildBankGoldTransactions(guildId, param1, param2, 'withdrawals', eventTime)                          
             end
         end)
         listener:Start()
@@ -310,7 +274,8 @@ function onAddOnLoaded(eventCode, addonName)
         return
     end
     EVENT_MANAGER:UnregisterForEvent(name, EVENT_ADD_ON_LOADED)
-    savedData = ZO_SavedVars:NewAccountWide(name, nil, nil, savedData)
+    -- savedData = ZO_SavedVars:NewAccountWide(name, nil, nil, savedData)
+    
 end
 
 EVENT_MANAGER:RegisterForEvent(name, EVENT_ADD_ON_LOADED, onAddOnLoaded)
