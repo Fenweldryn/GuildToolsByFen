@@ -1,3 +1,6 @@
+0.5.0
+- invite player to a guild menu item at the menu when right clicking a player name on chat
+
 0.4.0
 - added gold deposits and withdrawals for last week 
 - added tooltip for joined dates older than the oldest record available (i.e. member for > 49 days)

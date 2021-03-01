@@ -293,14 +293,30 @@ LibHistoire:RegisterCallback(LibHistoire.callback.INITIALIZED, function()
     end
 end)
 
+local function addInviteToGuildMenuItem(playerName, rawName)    
+    guildsSubMenu = {}
+
+    for i = 1, GetNumGuilds() do
+        guildId = GetGuildId(i)
+        guildName = GetGuildName(guildId)
+        guildsSubMenu[i] = {
+            label = guildName,
+            callback = function() GuildInvite(guildId, playerName) end,
+            itemType = MENU_ADD_OPTION_LABEL,
+            tooltip = "Invite " .. playerName .. ' to ' .. guildName,
+        }
+    end
+    AddCustomSubMenuItem("Invite to Guild", guildsSubMenu)
+end
+
 function onAddOnLoaded(eventCode, addonName)
     if (addonName ~= name) then
         return
     end
     EVENT_MANAGER:UnregisterForEvent(name, EVENT_ADD_ON_LOADED)
     -- savedData = ZO_SavedVars:NewAccountWide(name, nil, nil, savedData)
-    
 end
 
+LibCustomMenu:RegisterPlayerContextMenu(addInviteToGuildMenuItem)
 EVENT_MANAGER:RegisterForEvent(name, EVENT_ADD_ON_LOADED, onAddOnLoaded)
 

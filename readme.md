@@ -5,6 +5,7 @@ This addon can be downloaded using [Minion Addon Manager](https://minion.mmoui.c
 ## What does it do
 * how long ago a guild member joined the guild in a tooltip when you hover the guild member name.
 * bank gold deposited and withdrew in a tooltip when you hover the guild member name.
+* invite player to a guild menu item at the menu when right clicking a player name on chat
 
 Inspired by and based on Advanced Member Tooltip Addon.  
 
