@@ -35,7 +35,7 @@
 - fixed some other members not showing the days count
 
 0.1.1
-- fixed some member not showing despite having recently joined
+- fixed some members not showing join date despite having recently joined
 
 0.1.0
 - Initial Release
