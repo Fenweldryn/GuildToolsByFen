@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.5.0
+-- Guild Tools By Fen v0.6.0
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -14,9 +14,6 @@
 
 local LSC = LibSlashCommander
 local name = "GuildToolsByFen"
-local savedData = {
-    history = {},    
-}
 local scanGuildIndex = nil
 local org_ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter = ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter
 local org_ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit = ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit
@@ -36,7 +33,10 @@ local langStrings =
         last30Days  = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         lastWeek    = "last week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
+        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        noRecords   = "no records found",
+        bankGoldDeposits   = "BANK GOLD DEPOSITS",
+        bankGoldWithdrawals   = "BANK GOLD WITHDRAWALS",
     },
 	fr =
     {
@@ -51,7 +51,10 @@ local langStrings =
         last30Days  = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         lastWeek    = "last week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
+        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        noRecords   = "no records found",
+        bankGoldDeposits   = "BANK GOLD DEPOSITS",
+        bankGoldWithdrawals   = "BANK GOLD WITHDRAWALS",
     },
     de =
     {
@@ -66,7 +69,10 @@ local langStrings =
         last30Days  = "last 30 days: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         lastWeek    = "last week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
         thisWeek    = "this week: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
-        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t"
+        today       = "today: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t",
+        noRecords   = "no records found",
+        bankGoldDeposits   = "BANK GOLD DEPOSITS",
+        bankGoldWithdrawals   = "BANK GOLD WITHDRAWALS",
     }
 }
 
@@ -109,6 +115,84 @@ function secToTime(seconds)
     return time, str
 end
 
+local function createTimeJoinedTooltipString(guildId, displayName, timeStamp)
+    local tooltip = ""
+
+    if (GuildToolsByFen.history[guildId][string.lower(displayName)].timeJoined) then
+        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId][string.lower(displayName)].timeJoined)
+        tooltip = tooltip .. string.format(langStrings[lang].member, "", num, str)
+    else
+        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent)
+        tooltip = tooltip .. string.format(langStrings[lang].member, "> ", num, str)
+    end
+
+    return tooltip
+end
+
+local function createBankGoldDepositsTooltipString(guildId, displayName, timeStamp)
+    local tooltip = ""
+    
+    tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldDeposits .. '\n'
+    deposits = GuildToolsByFen.history[guildId][string.lower(displayName)].deposits
+    
+    if (deposits.last30Days == 0
+        and deposits.lastWeek == 0
+        and deposits.thisWeek == 0
+        and deposits.today == 0
+    ) then
+        tooltip = tooltip .. langStrings[lang].noRecords
+    else
+        depositsLast30Days = deposits.last30Days
+        tooltip = tooltip .. string.format(langStrings[lang].last30Days, depositsLast30Days)
+        
+        tooltip = tooltip .. "\n"           
+        depositsLastWeek = deposits.lastWeek
+        tooltip = tooltip .. string.format(langStrings[lang].lastWeek, depositsLastWeek)
+        
+        tooltip = tooltip .. "\n"           
+        depositsThisWeek = deposits.thisWeek
+        tooltip = tooltip .. string.format(langStrings[lang].thisWeek, depositsThisWeek)
+
+        tooltip = tooltip .. "\n"           
+        depositsToday = deposits.today
+        tooltip = tooltip .. string.format(langStrings[lang].today, depositsToday)
+    end
+
+    return tooltip
+end
+
+local function createBankGoldWhidrawalsTooltipString(guildId, displayName, timeStamp)
+    local tooltip = ""
+
+    tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldWithdrawals .. '\n'
+    withdrawals = GuildToolsByFen.history[guildId][string.lower(displayName)].withdrawals
+
+    if (withdrawals.last30Days == 0 
+        and withdrawals.lastWeek == 0 
+        and withdrawals.thisWeek == 0
+        and withdrawals.today == 0
+    ) then
+        tooltip = tooltip .. langStrings[lang].noRecords
+    else
+        withdrawalsLast30Days = withdrawals.last30Days
+        tooltip = tooltip .. string.format(langStrings[lang].last30Days, withdrawalsLast30Days)
+
+        tooltip = tooltip .. "\n"           
+        withdrawalsLastWeek = withdrawals.lastWeek
+        tooltip = tooltip .. string.format(langStrings[lang].lastWeek, withdrawalsLastWeek)
+        
+        tooltip = tooltip .. "\n"           
+        withdrawalsThisWeek = withdrawals.thisWeek
+        tooltip = tooltip .. string.format(langStrings[lang].thisWeek, withdrawalsThisWeek)
+
+        tooltip = tooltip .. "\n"           
+        withdrawalsToday = withdrawals.today
+        tooltip = tooltip .. string.format(langStrings[lang].today, withdrawalsToday)
+    end
+
+    return tooltip
+end
+
 function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     org_ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
 
@@ -121,61 +205,24 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     local tooltip = data.characterName
     local num, str
 
-    if (savedData.history[guildId] == nil) then return end
-    if (savedData.history[guildId][string.lower(displayName)] == nil) then return end
+    if (GuildToolsByFen.history[guildId] == nil) then return end
 
-    -- TIME JOINED
-    tooltip = tooltip .. "\n\n"                
+    tooltip = tooltip .. "\n\n"              
     
-    if (savedData.history[guildId][string.lower(displayName)].timeJoined) then
-        num, str = secToTime(timeStamp - savedData.history[guildId][string.lower(displayName)].timeJoined)
-        tooltip = tooltip .. string.format(langStrings[lang].member, "", num, str)
-    else
-        num, str = secToTime(timeStamp - savedData.history[guildId].oldestEvent)
+    if (GuildToolsByFen.history[guildId][string.lower(displayName)] == nil) then
+        --  NO PLAYER RECORD FOUND
+        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent)
         tooltip = tooltip .. string.format(langStrings[lang].member, "> ", num, str)
+        tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldDeposits .. '\n'
+        tooltip = tooltip .. langStrings[lang].noRecords
+        tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldWithdrawals .. '\n'
+        tooltip = tooltip .. langStrings[lang].noRecords
+    else
+        tooltip = tooltip .. createTimeJoinedTooltipString(guildId, displayName, timeStamp)
+        tooltip = tooltip .. createBankGoldDepositsTooltipString(guildId, displayName, timeStamp)
+        tooltip = tooltip .. createBankGoldWhidrawalsTooltipString(guildId, displayName, timeStamp)
     end
-
-    
-
-    -- BANK GOLD TRANSACTIONS
-    -- deposits
-    if (savedData.history[guildId][string.lower(displayName)].deposits) then
-        tooltip = tooltip .. "\n\n" .. 'BANK GOLD DEPOSITS' .. '\n'
-        depositsLast30Days = savedData.history[guildId][string.lower(displayName)].deposits.last30Days
-        tooltip = tooltip .. string.format(langStrings[lang].last30Days, depositsLast30Days)
-        
-        tooltip = tooltip .. "\n"           
-        depositsLastWeek = savedData.history[guildId][string.lower(displayName)].deposits.lastWeek
-        tooltip = tooltip .. string.format(langStrings[lang].lastWeek, depositsLastWeek)
-        
-        tooltip = tooltip .. "\n"           
-        depositsThisWeek = savedData.history[guildId][string.lower(displayName)].deposits.thisWeek
-        tooltip = tooltip .. string.format(langStrings[lang].thisWeek, depositsThisWeek)
-
-        tooltip = tooltip .. "\n"           
-        depositsToday = savedData.history[guildId][string.lower(displayName)].deposits.today
-        tooltip = tooltip .. string.format(langStrings[lang].today, depositsToday)
-    end
-
-    -- withdrawals
-    if (savedData.history[guildId][string.lower(displayName)].withdrawals) then
-       tooltip = tooltip .. "\n\n" .. 'BANK GOLD WITHDRAWALS' .. '\n'
-        withdrawalsLast30Days = savedData.history[guildId][string.lower(displayName)].withdrawals.last30Days
-        tooltip = tooltip .. string.format(langStrings[lang].last30Days, withdrawalsLast30Days)
-
-        tooltip = tooltip .. "\n"           
-        withdrawalsLastWeek = savedData.history[guildId][string.lower(displayName)].withdrawals.lastWeek
-        tooltip = tooltip .. string.format(langStrings[lang].lastWeek, withdrawalsLastWeek)
-        
-        tooltip = tooltip .. "\n"           
-        withdrawalsThisWeek = savedData.history[guildId][string.lower(displayName)].withdrawals.thisWeek
-        tooltip = tooltip .. string.format(langStrings[lang].thisWeek, withdrawalsThisWeek)
-
-        tooltip = tooltip .. "\n"           
-        withdrawalsToday = savedData.history[guildId][string.lower(displayName)].withdrawals.today
-        tooltip = tooltip .. string.format(langStrings[lang].today, withdrawalsToday)
-    end
-      
+     
     InitializeTooltip(InformationTooltip, control, BOTTOM, 0, 0, TOPCENTER)
     SetTooltipText(InformationTooltip, tooltip)
 end
@@ -187,41 +234,40 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit(control)
 end
 
 local function createGuild(guildId)
-    if (savedData.history[guildId] == nil) then
-        savedData.history[guildId] = {}
-    end 
+    if (GuildToolsByFen.history[guildId] ~= nil) then return end
+
+    GuildToolsByFen.history[guildId] = {}
 end
 
 local function createUser(user, guildId)
-    if (savedData.history[guildId][string.lower(user)] == nil) then  
-        savedData.history[guildId][string.lower(user)] = {
-            timeJoined = nil,
-            deposits = {
-                last30Days = 0,
-                lastWeek = 0,
-                thisWeek = 0,
-                today = 0
-            },
-            withdrawals = {
-                last30Days = 0,
-                lastWeek = 0,
-                thisWeek = 0,
-                today = 0
-            }
+    if (GuildToolsByFen.history[guildId][string.lower(user)] ~= nil) then return end  
+
+    GuildToolsByFen.history[guildId][string.lower(user)] = {
+        lastEvent = nil,
+        timeJoined = nil,
+        deposits = {
+            last30Days = 0,
+            lastWeek = 0,
+            thisWeek = 0,
+            today = 0
+        },
+        withdrawals = {
+            last30Days = 0,
+            lastWeek = 0,
+            thisWeek = 0,
+            today = 0
         }
-    end
+    }
 end
 
 local function storeGuildJoins(guildId, user, eventTime)
-    createGuild(guildId)   
-    createUser(user, guildId)
-
-    savedData.history[guildId][string.lower(user)].timeJoined = eventTime    
+    if(GuildToolsByFen.history[guildId][string.lower(user)].timeJoined ~= nil) then return end
+    
+    GuildToolsByFen.history[guildId][string.lower(user)].timeJoined = eventTime    
 end
 
 local function storeGuildBankGoldTransactions(guildId, user, gold, event, eventTime)  
-    createGuild(guildId)   
-    createUser(user, guildId)
+    
     date = os.date("*t", eventTime)
     date.yWeek = os.date('%U', eventTime);
     date.tradeWeek = date.yWeek;
@@ -234,10 +280,10 @@ local function storeGuildBankGoldTransactions(guildId, user, gold, event, eventT
     
     -- last 30 days
     if(eventTime >= (os.time() - 60*60*24*30)) then 
-        savedData.history[guildId][string.lower(user)][event].last30Days = gold + savedData.history[guildId][string.lower(user)][event].last30Days
+        GuildToolsByFen.history[guildId][string.lower(user)][event].last30Days = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].last30Days
     end
 
-    -- checking event ocurred and today's trade week (trade weeks start tuesdays at 2:01pm)
+    -- checking event and today's trade week (trade weeks start tuesdays at 2:01pm)
     if(today.wday == 1 or (today.wday == 2 and today.hour < 14)) then
         today.tradeWeek = today.yWeek - 1
     end
@@ -247,51 +293,19 @@ local function storeGuildBankGoldTransactions(guildId, user, gold, event, eventT
 
     -- last week
     if (date.tradeWeek == (today.tradeWeek - 1)) then
-        savedData.history[guildId][string.lower(user)][event].lastWeek = gold + savedData.history[guildId][string.lower(user)][event].lastWeek
+        GuildToolsByFen.history[guildId][string.lower(user)][event].lastWeek = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].lastWeek
     end
 
     -- this week
     if (date.tradeWeek == today.tradeWeek) then
-        savedData.history[guildId][string.lower(user)][event].thisWeek = gold + savedData.history[guildId][string.lower(user)][event].thisWeek
+        GuildToolsByFen.history[guildId][string.lower(user)][event].thisWeek = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].thisWeek
     end
     
     -- today
     if (date.day == today.day) then
-        savedData.history[guildId][string.lower(user)][event].today = gold + savedData.history[guildId][string.lower(user)][event].today
+        GuildToolsByFen.history[guildId][string.lower(user)][event].today = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].today
     end
 end
-
-LibHistoire:RegisterCallback(LibHistoire.callback.INITIALIZED, function()
-    local function SetUpListener(guildId, category)
-        local listener = LibHistoire:CreateGuildHistoryListener(guildId, category)
-        listener:SetEventCallback(function(eventType, eventId, eventTime, param1, param2, param3, param4, param5, param6)            
-            
-            if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then              
-                storeGuildJoins(guildId, param1, eventTime)
-            end
-
-            if(eventType == GUILD_EVENT_BANKGOLD_ADDED and category == GUILD_HISTORY_BANK) then                
-                storeGuildBankGoldTransactions(guildId, param1, param2, 'deposits', eventTime)                          
-            end
-
-            if(eventType == GUILD_EVENT_BANKGOLD_REMOVED and category == GUILD_HISTORY_BANK) then
-                storeGuildBankGoldTransactions(guildId, param1, param2, 'withdrawals', eventTime)                          
-            end
-
-            if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then  
-                if(savedData.history[guildId].oldestEvent == nil) then
-                    savedData.history[guildId].oldestEvent = eventTime                    
-                end
-            end
-        end)
-        listener:Start()
-    end
-
-    for i = 1, GetNumGuilds() do
-        SetUpListener(GetGuildId(i), GUILD_HISTORY_GENERAL)
-        SetUpListener(GetGuildId(i), GUILD_HISTORY_BANK)
-    end
-end)
 
 local function addInviteToGuildMenuItem(playerName, rawName)    
     guildsSubMenu = {}
@@ -309,14 +323,56 @@ local function addInviteToGuildMenuItem(playerName, rawName)
     AddCustomSubMenuItem("Invite to Guild", guildsSubMenu)
 end
 
+local function SetUpLibHistoireListener(guildId, category, startTime, endTime)
+    local listener = LibHistoire:CreateGuildHistoryListener(guildId, category)    
+    
+    if(startTime ~= nil and endTime ~= nil) then
+        listener:SetTimeFrame(startTime, endTime)
+    end
+
+    listener:SetEventCallback(function(eventType, eventId, eventTime, param1, param2, param3, param4, param5, param6)        
+        createGuild(guildId)   
+        createUser(param1, guildId) 
+
+
+        if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then              
+            storeGuildJoins(guildId, param1, eventTime)
+        end
+
+        if(eventType == GUILD_EVENT_BANKGOLD_ADDED and category == GUILD_HISTORY_BANK) then                
+            storeGuildBankGoldTransactions(guildId, param1, param2, 'deposits', eventTime)                          
+        end
+
+        if(eventType == GUILD_EVENT_BANKGOLD_REMOVED and category == GUILD_HISTORY_BANK) then
+            storeGuildBankGoldTransactions(guildId, param1, param2, 'withdrawals', eventTime)                          
+        end
+
+        if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then  
+            if(GuildToolsByFen.history[guildId].oldestEvent == nil) then
+                GuildToolsByFen.history[guildId].oldestEvent = eventTime                    
+            end
+        end
+    end)
+    listener:Start()
+end
+
 function onAddOnLoaded(eventCode, addonName)
     if (addonName ~= name) then
         return
     end
+    
     EVENT_MANAGER:UnregisterForEvent(name, EVENT_ADD_ON_LOADED)
-    -- savedData = ZO_SavedVars:NewAccountWide(name, nil, nil, savedData)
+    
+    if(GuildToolsByFen[history] == nil) then GuildToolsByFen.history = {} end
+
+    startTime = os.time() - 30*24*60*60
+    endTime = os.time()
+
+    for i = 1, GetNumGuilds() do
+        SetUpLibHistoireListener(GetGuildId(i), GUILD_HISTORY_GENERAL)
+        SetUpLibHistoireListener(GetGuildId(i), GUILD_HISTORY_BANK, startTime, endTime)
+    end
 end
 
 LibCustomMenu:RegisterPlayerContextMenu(addInviteToGuildMenuItem)
 EVENT_MANAGER:RegisterForEvent(name, EVENT_ADD_ON_LOADED, onAddOnLoaded)
-
