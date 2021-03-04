@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.6.0
+-- Guild Tools By Fen v0.6.1
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -363,7 +363,10 @@ function onAddOnLoaded(eventCode, addonName)
     
     EVENT_MANAGER:UnregisterForEvent(name, EVENT_ADD_ON_LOADED)
     
-    if(GuildToolsByFen[history] == nil) then GuildToolsByFen.history = {} end
+    if(GuildToolsByFen == nil) then 
+        GuildToolsByFen = {} 
+        GuildToolsByFen.history = {} 
+    end
 
     startTime = os.time() - 30*24*60*60
     endTime = os.time()

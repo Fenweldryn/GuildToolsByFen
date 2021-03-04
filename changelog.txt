@@ -1,3 +1,6 @@
+0.6.1
+- fixed error on startup when first version installed was version 0.6.0
+
 0.6.0
 - code cleanup
 - performance improvements: saving processed LibHistoire logs to this addon's SavedVariables and appending changes to it instead of processing all logs every ui load.
