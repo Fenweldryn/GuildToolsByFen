@@ -1,6 +1,7 @@
 0.6.0
 - code cleanup
 - performance improvements: saving processed LibHistoire logs to this addon's SavedVariables and appending changes to it instead of processing all logs every ui load.
+- players with no join or bank gold transaction records will have a tooltip as well.
 
 0.5.0
 - invite player to a guild menu item at the menu when right clicking a player name on chat
