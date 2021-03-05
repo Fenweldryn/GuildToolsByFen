@@ -1,3 +1,8 @@
+0.7.0
+- send a saved guild invite message on chat (check this addon's settings to create a message)
+- big code organization improvements
+- fixed guild oldestEvent update logic. Requesting more data from guild history would not update this variable which in turn would not show correct oldest record date for players with join date older than available record
+
 0.6.1
 - fixed error on startup when first version installed was version 0.6.0
 
