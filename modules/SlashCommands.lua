@@ -3,7 +3,6 @@ local SlashCommands = GuildToolsByFenInternals.SlashCommands
 local ChatEditControl = CHAT_SYSTEM.textEntry.editControl
 
 function SlashCommands.pasteInviteMessage()  
-    d(GuildToolsByFenSettings.inviteMessage) 
     if (not ChatEditControl:HasFocus()) then StartChatInput() end
     ChatEditControl:InsertText(GuildToolsByFenSettings.inviteMessage)
 end

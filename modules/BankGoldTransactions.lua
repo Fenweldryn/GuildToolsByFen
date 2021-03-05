@@ -45,20 +45,22 @@ function BankGoldTransactions.store(guildId, user, gold, event, eventTime)
 end
 
 function BankGoldTransactions.resetUserTransactions(guildId)
-    for index, value in pairs(GuildToolsByFen.history[guildId]) do    
-        if(string.sub(index, 1, 1) == '@') then
-            GuildToolsByFen.history[guildId][index].deposits = {
-                last30Days = 0,
-                lastWeek = 0,
-                thisWeek = 0,
-                today = 0
-            }
-            GuildToolsByFen.history[guildId][index].withdrawals = {
-                last30Days = 0,
-                lastWeek = 0,
-                thisWeek = 0,
-                today = 0
-            }
+    if (GuildToolsByFen.history[guildId] ~= nil) then
+        for index, value in pairs(GuildToolsByFen.history[guildId]) do    
+            if(string.sub(index, 1, 1) == '@') then
+                GuildToolsByFen.history[guildId][index].deposits = {
+                    last30Days = 0,
+                    lastWeek = 0,
+                    thisWeek = 0,
+                    today = 0
+                }
+                GuildToolsByFen.history[guildId][index].withdrawals = {
+                    last30Days = 0,
+                    lastWeek = 0,
+                    thisWeek = 0,
+                    today = 0
+                }
+            end
         end
     end
 end
