@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.7.1
+-- Guild Tools By Fen v0.7.2
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media

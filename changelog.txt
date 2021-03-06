@@ -1,3 +1,6 @@
+0.7.2
+- removed duplicated guild invite option from the right click menu
+
 0.7.1
 - fixed error when no SavedVariables file existed before load (first install) for the resetUserTransactions function
 
