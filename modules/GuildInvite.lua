@@ -1,15 +1,16 @@
 GuildToolsByFenInternals.GuildInvite = {}
-local GuildInvite = GuildToolsByFenInternals.GuildInvite
+local _GuildInvite = GuildToolsByFenInternals.GuildInvite
 
-function GuildInvite.addMenuItem(playerName, rawName)    
+function _GuildInvite.addMenuItem(playerName, rawName)    
     guildsSubMenu = {}
-    
-    for i = 1, GetNumGuilds() do
-        guildId = GetGuildId(i)
-        guildName = GetGuildName(guildId)
+    for i = 1, GetNumGuilds() do        
+        local guildId = GetGuildId(i)
+        local guildName = GetGuildName(guildId)
         guildsSubMenu[i] = {
             label = guildName,
-            callback = function() GuildInvite(guildId, playerName) end,
+            callback = function() 
+                GuildInvite(guildId, playerName)
+            end,
             itemType = MENU_ADD_OPTION_LABEL,
             tooltip = "Invite " .. playerName .. ' to ' .. guildName,
         }
@@ -17,4 +18,4 @@ function GuildInvite.addMenuItem(playerName, rawName)
     AddCustomSubMenuItem("Invite to Guild", guildsSubMenu)
 end
 
-LibCustomMenu:RegisterPlayerContextMenu(GuildInvite.addMenuItem)
+LibCustomMenu:RegisterPlayerContextMenu(_GuildInvite.addMenuItem)
