@@ -22,3 +22,5 @@ If you have just installed this addon If you have just installed this addon and 
 * LibHistoire
 * LibSlashCommander
 * LibCustomMenu
+* LibAddonMenu-2.0
+* LibSavedVars
