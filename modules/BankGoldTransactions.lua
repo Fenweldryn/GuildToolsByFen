@@ -17,7 +17,7 @@ function BankGoldTransactions.store(guildId, user, gold, event, eventTime)
     
     -- last 30 days
     if(eventTime >= (os.time() - 60*60*24*30)) then 
-        GuildToolsByFen.history[guildId][string.lower(user)][event].last30Days = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].last30Days
+        GuildToolsByFen.history[guildId][user][event].last30Days = gold + GuildToolsByFen.history[guildId][user][event].last30Days
     end
     
     -- checking event and today's trade week (trade weeks start tuesdays at 2:01pm)
@@ -30,17 +30,17 @@ function BankGoldTransactions.store(guildId, user, gold, event, eventTime)
     
     -- last week
     if (date.tradeWeek == (today.tradeWeek - 1)) then
-        GuildToolsByFen.history[guildId][string.lower(user)][event].lastWeek = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].lastWeek
+        GuildToolsByFen.history[guildId][user][event].lastWeek = gold + GuildToolsByFen.history[guildId][user][event].lastWeek
     end
     
     -- this week
     if (date.tradeWeek == today.tradeWeek) then
-        GuildToolsByFen.history[guildId][string.lower(user)][event].thisWeek = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].thisWeek
+        GuildToolsByFen.history[guildId][user][event].thisWeek = gold + GuildToolsByFen.history[guildId][user][event].thisWeek
     end
     
     -- today
     if (date.day == today.day) then
-        GuildToolsByFen.history[guildId][string.lower(user)][event].today = gold + GuildToolsByFen.history[guildId][string.lower(user)][event].today
+        GuildToolsByFen.history[guildId][user][event].today = gold + GuildToolsByFen.history[guildId][user][event].today
     end
 end
 
@@ -68,7 +68,7 @@ end
 function BankGoldTransactions.createDepositsTooltipString(guildId, displayName, timeStamp)
     local tooltip = ""
     local tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldDeposits .. '\n'
-    local deposits = GuildToolsByFen.history[guildId][string.lower(displayName)].deposits
+    local deposits = GuildToolsByFen.history[guildId][displayName].deposits
     
     if (deposits.last30Days == 0
         and deposits.lastWeek == 0
@@ -98,7 +98,7 @@ end
 function BankGoldTransactions.createWhidrawalsTooltipString(guildId, displayName, timeStamp)
     local tooltip = ""
     local tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldWithdrawals .. '\n'
-    local withdrawals = GuildToolsByFen.history[guildId][string.lower(displayName)].withdrawals
+    local withdrawals = GuildToolsByFen.history[guildId][displayName].withdrawals
     
     if (withdrawals.last30Days == 0 
     and withdrawals.lastWeek == 0 

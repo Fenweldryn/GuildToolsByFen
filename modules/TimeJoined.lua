@@ -6,8 +6,8 @@ local lang = GuildToolsByFenInternals.lang
 function TimeJoined.createTooltipString(guildId, displayName, timeStamp)
     local tooltip = ""
     
-    if (GuildToolsByFen.history[guildId][string.lower(displayName)].timeJoined) then
-        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId][string.lower(displayName)].timeJoined)
+    if (GuildToolsByFen.history[guildId][displayName].timeJoined) then
+        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId][displayName].timeJoined)
         tooltip = tooltip .. string.format(langStrings[lang].member, "", num, str)
     else
         num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent)
@@ -18,7 +18,7 @@ function TimeJoined.createTooltipString(guildId, displayName, timeStamp)
 end
 
 function TimeJoined.storeGuildJoins(guildId, user, eventTime)
-    if(GuildToolsByFen.history[guildId][string.lower(user)].timeJoined ~= nil) then return end
+    if(GuildToolsByFen.history[guildId][user].timeJoined ~= nil) then return end
     
-    GuildToolsByFen.history[guildId][string.lower(user)].timeJoined = eventTime    
+    GuildToolsByFen.history[guildId][user].timeJoined = eventTime    
 end

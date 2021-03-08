@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Guild Tools By Fen v0.7.3
+-- Guild Tools By Fen v0.7.4
 -------------------------------------------------------------------------------
 -- Author: Fenweldryn
 -- This Add-on is not created by, affiliated with or sponsored by ZeniMax Media
@@ -59,7 +59,7 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     local parent = control:GetParent()
     local data = ZO_ScrollList_GetData(parent)
     local guildId = GUILD_SELECTOR.guildId
-    local displayName = string.lower(data.displayName)
+    local displayName = data.displayName
     local timeStamp = GetTimeStamp()
     
     local tooltip = data.characterName
@@ -69,7 +69,7 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     
     tooltip = tooltip .. "\n\n"              
     
-    if (GuildToolsByFen.history[guildId][string.lower(displayName)] == nil) then
+    if (GuildToolsByFen.history[guildId][displayName] == nil) then
         --  NO PLAYER RECORD FOUND
         num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent)
         tooltip = tooltip .. string.format(langStrings[lang].member, "> ", num, str)

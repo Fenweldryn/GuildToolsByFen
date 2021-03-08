@@ -1,3 +1,6 @@
+0.7.4
+- now the SavedVariables keeps account names with original letter case
+
 0.7.3
 - fixed player invites not working
 

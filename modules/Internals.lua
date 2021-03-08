@@ -2,7 +2,7 @@ GuildToolsByFenInternals = {
     name = "GuildToolsByFen",
     title = "Guild Tools by Fen",
     author = "Fenweldryn",
-    version = "0.7.3"
+    version = "0.7.4"
 }
 
 if(GuildToolsByFen == nil) then 
@@ -19,9 +19,9 @@ GuildToolsByFenInternals.rosterOnMouseEnter = ZO_KeyboardGuildRosterRowDisplayNa
 GuildToolsByFenInternals.rosterOnMouseExit = ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit
 
 function GuildToolsByFenInternals.createUser(user, guildId)
-    if (GuildToolsByFen.history[guildId][string.lower(user)] ~= nil) then return end  
+    if (GuildToolsByFen.history[guildId][user] ~= nil) then return end  
     
-    GuildToolsByFen.history[guildId][string.lower(user)] = {
+    GuildToolsByFen.history[guildId][user] = {
         lastEvent = nil,
         timeJoined = nil,
         deposits = {
