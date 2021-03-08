@@ -1,3 +1,7 @@
+0.7.5
+- included supported APIVersion of Flames of Ambition update
+- placed deposits first on the SavedVariables file to facilitate the my work with the xls exporter
+
 0.7.4
 - now the SavedVariables keeps account names with original letter case
 

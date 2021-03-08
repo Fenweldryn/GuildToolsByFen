@@ -2,7 +2,7 @@ GuildToolsByFenInternals = {
     name = "GuildToolsByFen",
     title = "Guild Tools by Fen",
     author = "Fenweldryn",
-    version = "0.7.4"
+    version = "0.7.5"
 }
 
 if(GuildToolsByFen == nil) then 
@@ -24,18 +24,18 @@ function GuildToolsByFenInternals.createUser(user, guildId)
     GuildToolsByFen.history[guildId][user] = {
         lastEvent = nil,
         timeJoined = nil,
-        deposits = {
-            last30Days = 0,
-            lastWeek = 0,
-            thisWeek = 0,
-            today = 0
-        },
         withdrawals = {
             last30Days = 0,
             lastWeek = 0,
             thisWeek = 0,
             today = 0
-        }
+        },
+        deposits = {
+            last30Days = 0,
+            lastWeek = 0,
+            thisWeek = 0,
+            today = 0
+        }        
     }
 end
 
