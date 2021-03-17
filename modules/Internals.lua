@@ -2,7 +2,7 @@ GuildToolsByFenInternals = {
     name = "GuildToolsByFen",
     title = "Guild Tools by Fen",
     author = "Fenweldryn",
-    version = "0.7.5"
+    version = "0.7.6"
 }
 
 if(GuildToolsByFen == nil) then 

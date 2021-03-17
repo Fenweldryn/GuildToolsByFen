@@ -5,14 +5,14 @@ local lang = GuildToolsByFenInternals.lang
 
 function BankGoldTransactions.store(guildId, user, gold, event, eventTime)  
     
-    date = os.date("*t", eventTime)
-    date.yWeek = os.date('%U', eventTime);
-    date.tradeWeek = date.yWeek;
+    eventDate = os.date("*t", eventTime)
+    eventDate.yWeek = os.date('%U', eventTime);
+    eventDate.tradeWeek = eventDate.yWeek;
     today = os.date("*t")
     today.yWeek = os.date('%U', os.time());
     today.tradeWeek = today.yWeek;
-    
-    if(date.year ~= os.date('*t', os.time()).year) then return end
+
+    if(eventDate.year ~= os.date('*t', os.time()).year) then return end
     if(eventTime < (os.time() - 60*60*24*30)) then return end
     
     -- last 30 days
@@ -21,25 +21,25 @@ function BankGoldTransactions.store(guildId, user, gold, event, eventTime)
     end
     
     -- checking event and today's trade week (trade weeks start tuesdays at 2:01pm)
-    if(today.wday == 1 or (today.wday == 2 and today.hour < 14)) then
+    if(today.wday <= 2 or (today.wday == 3 and today.hour < 14)) then
         today.tradeWeek = today.yWeek - 1
     end
-    if(date.wday == 1 or (date.wday == 2 and date.hour < 14)) then
-        date.tradeWeek = date.yWeek - 1
+    if(eventDate.wday <= 2 or (eventDate.wday == 3 and eventDate.hour < 14)) then
+        eventDate.tradeWeek = eventDate.yWeek - 1
     end            
-    
+   
     -- last week
-    if (date.tradeWeek == (today.tradeWeek - 1)) then
-        GuildToolsByFen.history[guildId][user][event].lastWeek = gold + GuildToolsByFen.history[guildId][user][event].lastWeek
+    if (tonumber(eventDate.tradeWeek) == tonumber(today.tradeWeek - 1)) then
+        GuildToolsByFen.history[guildId][user][event].lastWeek = gold + GuildToolsByFen.history[guildId][user][event].lastWeek        
     end
     
     -- this week
-    if (date.tradeWeek == today.tradeWeek) then
+    if (eventDate.tradeWeek == today.tradeWeek) then
         GuildToolsByFen.history[guildId][user][event].thisWeek = gold + GuildToolsByFen.history[guildId][user][event].thisWeek
     end
     
     -- today
-    if (date.day == today.day) then
+    if (eventDate.day == today.day and eventDate.month == today.month) then
         GuildToolsByFen.history[guildId][user][event].today = gold + GuildToolsByFen.history[guildId][user][event].today
     end
 end

@@ -2,7 +2,7 @@
 ## Author: Fenweldryn
 ## APIVersion: 100033 100034 
 ## Description: show how long ago a guild member joined the guild and bank gold deposited and withdrew
-## Version: 0.7.5
+## Version: 0.7.6
 ## SavedVariables: GuildToolsByFen GuildToolsByFenSettings
 ## DependsOn: LibHistoire LibSlashCommander LibSavedVars LibCustomMenu LibAddonMenu-2.0
 ##
