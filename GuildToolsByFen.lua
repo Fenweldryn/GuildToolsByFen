@@ -20,39 +20,6 @@ local GuildInvite = GuildToolsByFenInternals.GuildInvite
 local SettingsMenu = GuildToolsByFenInternals.SettingsMenu
 local SlashCommands = GuildToolsByFenInternals.SlashCommands
 
-function secToTime(seconds)    
-    local time = math.floor(seconds / 60)
-    local str = langStrings[lang].minute
-    
-    if (time > 60) then
-        time = math.floor(seconds / (60 * 60))
-        
-        if (time > 24) then
-            time = math.floor(seconds / (60 * 60 * 24))
-            
-            str = langStrings[lang].day
-        else
-            str = langStrings[lang].hour
-        end
-    end
-    
-    if (time ~= 1) then
-        if (lang == "en") then
-            str = str .. 's'
-        end
-        
-        if (lang == "de") then
-            if (str == langStrings[lang].day) then
-                str = str .. 'en'
-            else
-                str = str .. 'n'
-            end
-        end
-    end
-    
-    return time, str
-end
-
 function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     -- org_ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     
@@ -62,33 +29,29 @@ function ZO_KeyboardGuildRosterRowDisplayName_OnMouseEnter(control)
     local displayName = data.displayName
     local timeStamp = GetTimeStamp()
     
-    local tooltip = data.characterName
-    local num, str
+    local tooltip = {}
+    table.insert(tooltip, data.characterName)
     
     if (GuildToolsByFen.history[guildId] == nil) then return end
     
-    tooltip = tooltip .. "\n\n"              
-    
     if (GuildToolsByFen.history[guildId][displayName] == nil) then
         --  NO PLAYER RECORD FOUND
-        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent)
-        tooltip = tooltip .. string.format(langStrings[lang].member, "> ", num, str)
-        tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldDeposits .. '\n'
-        tooltip = tooltip .. langStrings[lang].noRecords
-        tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldWithdrawals .. '\n'
-        tooltip = tooltip .. langStrings[lang].noRecords
+        timeString = tostring(ZO_FormatTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent,TIME_FORMAT_STYLE_SHOW_LARGEST_UNIT_DESCRIPTIVE,TIME_FORMAT_PRECISION_SECONDS))
+        table.insert(tooltip, langStrings[lang].member .. "> " .. timeString)
+        table.insert(tooltip, langStrings[lang].bankGoldDeposits .. '\n' .. langStrings[lang].noRecords)
+        table.insert(tooltip, langStrings[lang].bankGoldWithdrawals .. '\n' .. langStrings[lang].noRecords)
     else
-        tooltip = tooltip .. TimeJoined.createTooltipString(guildId, displayName, timeStamp)
-        tooltip = tooltip .. GuildToolsByFenInternals.BankGoldTransactions.createDepositsTooltipString(guildId, displayName, timeStamp)
-        tooltip = tooltip .. GuildToolsByFenInternals.BankGoldTransactions.createWhidrawalsTooltipString(guildId, displayName, timeStamp)
+        table.insert(tooltip, TimeJoined.createTooltipString(guildId, displayName, timeStamp))
+        table.insert(tooltip, GuildToolsByFenInternals.BankGoldTransactions.createTooltipString(guildId, displayName, timeStamp, 'deposits'))        
+        table.insert(tooltip, GuildToolsByFenInternals.BankGoldTransactions.createTooltipString(guildId, displayName, timeStamp, 'withdrawals'))        
     end
     
     InitializeTooltip(InformationTooltip, control, BOTTOM, 0, 0, TOPCENTER)
-    SetTooltipText(InformationTooltip, tooltip)
+    SetTooltipText(InformationTooltip, table.concat(tooltip, "\n\n"))
 end
 
 function ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit(control)
-    ClearTooltip(InformationTooltip)
+    -- ClearTooltip(InformationTooltip)
     
     -- org_ZO_KeyboardGuildRosterRowDisplayName_OnMouseExit(control)
 end

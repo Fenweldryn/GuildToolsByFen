@@ -65,62 +65,24 @@ function BankGoldTransactions.resetUserTransactions(guildId)
     end
 end
 
-function BankGoldTransactions.createDepositsTooltipString(guildId, displayName, timeStamp)
-    local tooltip = ""
-    local tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldDeposits .. '\n'
-    local deposits = GuildToolsByFen.history[guildId][displayName].deposits
+function BankGoldTransactions.createTooltipString(guildId, displayName, timeStamp, operationName)
+    local tooltip = {}
+    local operation = GuildToolsByFen.history[guildId][displayName][operationName]
+    local operationNameUpperCase = operationName:gsub("^%l", string.upper)
     
-    if (deposits.last30Days == 0
-        and deposits.lastWeek == 0
-        and deposits.thisWeek == 0
-        and deposits.today == 0) then
-        tooltip = tooltip .. langStrings[lang].noRecords
+    table.insert(tooltip, langStrings[lang]['bankGold' .. operationNameUpperCase])
+    
+    if (operation.last30Days == 0
+        and operation.lastWeek == 0
+        and operation.thisWeek == 0
+        and operation.today == 0) then
+        table.insert(tooltip, langStrings[lang].noRecords)
     else
-        depositsLast30Days = deposits.last30Days
-        tooltip = tooltip .. string.format(langStrings[lang].last30Days, depositsLast30Days)
-        
-        tooltip = tooltip .. "\n"           
-        depositsLastWeek = deposits.lastWeek
-        tooltip = tooltip .. string.format(langStrings[lang].lastWeek, depositsLastWeek)
-        
-        tooltip = tooltip .. "\n"           
-        depositsThisWeek = deposits.thisWeek
-        tooltip = tooltip .. string.format(langStrings[lang].thisWeek, depositsThisWeek)
-        
-        tooltip = tooltip .. "\n"           
-        depositsToday = deposits.today
-        tooltip = tooltip .. string.format(langStrings[lang].today, depositsToday)
+        table.insert(tooltip, string.format(langStrings[lang].last30Days, operation.last30Days))        
+        table.insert(tooltip, string.format(langStrings[lang].lastWeek, operation.lastWeek))        
+        table.insert(tooltip, string.format(langStrings[lang].thisWeek, operation.thisWeek))        
+        table.insert(tooltip, string.format(langStrings[lang].today, operation.today))
     end
 
-    return tooltip
-end
-
-function BankGoldTransactions.createWhidrawalsTooltipString(guildId, displayName, timeStamp)
-    local tooltip = ""
-    local tooltip = tooltip .. "\n\n" .. langStrings[lang].bankGoldWithdrawals .. '\n'
-    local withdrawals = GuildToolsByFen.history[guildId][displayName].withdrawals
-    
-    if (withdrawals.last30Days == 0 
-    and withdrawals.lastWeek == 0 
-    and withdrawals.thisWeek == 0
-    and withdrawals.today == 0) then
-        tooltip = tooltip .. langStrings[lang].noRecords
-    else
-        withdrawalsLast30Days = withdrawals.last30Days
-        tooltip = tooltip .. string.format(langStrings[lang].last30Days, withdrawalsLast30Days)
-        
-        tooltip = tooltip .. "\n"           
-        withdrawalsLastWeek = withdrawals.lastWeek
-        tooltip = tooltip .. string.format(langStrings[lang].lastWeek, withdrawalsLastWeek)
-        
-        tooltip = tooltip .. "\n"           
-        withdrawalsThisWeek = withdrawals.thisWeek
-        tooltip = tooltip .. string.format(langStrings[lang].thisWeek, withdrawalsThisWeek)
-        
-        tooltip = tooltip .. "\n"           
-        withdrawalsToday = withdrawals.today
-        tooltip = tooltip .. string.format(langStrings[lang].today, withdrawalsToday)
-    end
-    
-    return tooltip
+    return table.concat(tooltip, "\n")
 end

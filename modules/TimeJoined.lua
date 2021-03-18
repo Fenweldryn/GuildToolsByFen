@@ -5,13 +5,13 @@ local lang = GuildToolsByFenInternals.lang
 
 function TimeJoined.createTooltipString(guildId, displayName, timeStamp)
     local tooltip = ""
-    
+
     if (GuildToolsByFen.history[guildId][displayName].timeJoined) then
-        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId][displayName].timeJoined)
-        tooltip = tooltip .. string.format(langStrings[lang].member, "", num, str)
+        timeString = tostring(ZO_FormatTime(timeStamp - GuildToolsByFen.history[guildId][displayName].timeJoined,TIME_FORMAT_STYLE_SHOW_LARGEST_UNIT_DESCRIPTIVE,TIME_FORMAT_PRECISION_SECONDS))
+        tooltip = tooltip .. langStrings[lang].member .. timeString
     else
-        num, str = secToTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent)
-        tooltip = tooltip .. string.format(langStrings[lang].member, "> ", num, str)
+        timeString = tostring(ZO_FormatTime(timeStamp - GuildToolsByFen.history[guildId].oldestEvent,TIME_FORMAT_STYLE_SHOW_LARGEST_UNIT_DESCRIPTIVE,TIME_FORMAT_PRECISION_SECONDS))
+        tooltip = tooltip .. langStrings[lang].member .. "> " .. timeString
     end
     
     return tooltip

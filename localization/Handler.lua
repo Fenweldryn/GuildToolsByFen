@@ -2,7 +2,7 @@ GuildToolsByFenInternals.lang = 'en'
 GuildToolsByFenInternals.langStrings = {
     en =
     {
-        member      = "Member for %s%i %s",
+        member      = "Member for ",
         deposits    = "Deposits",
         withdrawals = "Withdrawals",
         total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (over %i %s)",
@@ -21,7 +21,7 @@ GuildToolsByFenInternals.langStrings = {
     },
     fr =
     {
-        member      = "Membre pour %s%i %s",
+        member      = "Membre pour ",
         deposits    = "Dépôts",
         withdrawals = "Retraits",
         total       = "Total: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (sur %i %s)",
@@ -40,7 +40,7 @@ GuildToolsByFenInternals.langStrings = {
     },
     de =
     {
-        member      = "Mitglied seit %s%i %s",
+        member      = "Mitglied seit ",
         deposits    = "Einzahlungen",
         withdrawals = "Auszahlungen",
         total       = "Gesamt: %i |t16:16:EsoUI/Art/currency/currency_gold.dds|t (innerhalb von %i %s)",
