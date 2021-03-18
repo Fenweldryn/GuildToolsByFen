@@ -58,13 +58,9 @@ end
 
 local function SetUpLibHistoireListener(guildId, category, startTime, endTime)
     local listener = LibHistoire:CreateGuildHistoryListener(guildId, category)    
-    
-    -- if(startTime ~= nil and endTime ~= nil) then
-    --     listener:SetTimeFrame(startTime, endTime)
-    -- end
-    
+
     listener:SetEventCallback(function(eventType, eventId, eventTime, param1, param2, param3, param4, param5, param6)              
-        if(eventType == GUILD_EVENT_GUILD_JOIN or eventType == GUILD_EVENT_GUILD_JOIN) then
+        if(eventType == GUILD_EVENT_GUILD_JOIN or eventType == GUILD_EVENT_BANKGOLD_ADDED) then
             GuildToolsByFenInternals.createGuild(guildId)   
             GuildToolsByFenInternals.createUser(param1, guildId)         
         end        
