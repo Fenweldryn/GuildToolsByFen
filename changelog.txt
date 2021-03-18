@@ -1,6 +1,7 @@
 0.8.0
 - performance improvements
 - code improvements
+- member joined time now shows either minutes, days and months (greater one)
 
 0.7.6
 - fixed last week and this week gold bank deposit calculation
