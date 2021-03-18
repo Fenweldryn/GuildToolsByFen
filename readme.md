@@ -24,3 +24,4 @@ If you have just installed this addon If you have just installed this addon and 
 * LibCustomMenu
 * LibAddonMenu-2.0
 * LibSavedVars
+* LibDateTime

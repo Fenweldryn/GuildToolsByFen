@@ -61,8 +61,8 @@ local function SetUpLibHistoireListener(guildId, category, startTime, endTime)
 
     listener:SetEventCallback(function(eventType, eventId, eventTime, param1, param2, param3, param4, param5, param6)              
         if(eventType == GUILD_EVENT_GUILD_JOIN or eventType == GUILD_EVENT_BANKGOLD_ADDED) then
-            GuildToolsByFenInternals.createGuild(guildId)   
             GuildToolsByFenInternals.createUser(param1, guildId)         
+            GuildToolsByFenInternals.createGuild(guildId)   
         end        
         
         if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then              

@@ -1,3 +1,7 @@
+0.9.0
+- added LibDateTime to calculate trade weeks properly
+- added formating for gold numbers (1,000,000)
+
 0.8.2
 - fixed small bug introduced in 0.8.1
 

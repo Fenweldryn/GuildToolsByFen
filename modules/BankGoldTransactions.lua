@@ -5,13 +5,14 @@ local lang = GuildToolsByFenInternals.lang
 
 function BankGoldTransactions.store(guildId, user, gold, event, eventTime)  
     
-    eventDate = os.date("*t", eventTime)
-    eventDate.yWeek = os.date('%U', eventTime);
-    eventDate.tradeWeek = eventDate.yWeek;
-    today = os.date("*t")
-    today.yWeek = os.date('%U', os.time());
-    today.tradeWeek = today.yWeek;
+    local eventDate = os.date("*t", eventTime)
+    local today = os.date("*t")
+    local lastTradeWeekStart = 0
+    local lastTradeWeekEnd = 0
+    _, today.tradeWeekStart, today.tradeWeekEnd = LibDateTime:GetTraderWeek()
+    _, lastTradeWeekStart, lastTradeWeekEnd = LibDateTime:GetTraderWeek(-1)
 
+    if(today.tradeWeekStart == nil or lastTradeWeekStart == nil) then return end    
     if(eventDate.year ~= os.date('*t', os.time()).year) then return end
     if(eventTime < (os.time() - 60*60*24*30)) then return end
     
@@ -19,22 +20,15 @@ function BankGoldTransactions.store(guildId, user, gold, event, eventTime)
     if(eventTime >= (os.time() - 60*60*24*30)) then 
         GuildToolsByFen.history[guildId][user][event].last30Days = gold + GuildToolsByFen.history[guildId][user][event].last30Days
     end
-    
-    -- checking event and today's trade week (trade weeks start tuesdays at 2:01pm)
-    if(today.wday <= 2 or (today.wday == 3 and today.hour < 14)) then
-        today.tradeWeek = today.yWeek - 1
-    end
-    if(eventDate.wday <= 2 or (eventDate.wday == 3 and eventDate.hour < 14)) then
-        eventDate.tradeWeek = eventDate.yWeek - 1
-    end            
    
     -- last week
-    if (tonumber(eventDate.tradeWeek) == tonumber(today.tradeWeek - 1)) then
+
+    if(eventTime >= lastTradeWeekStart and eventTime <= lastTradeWeekEnd ) then
         GuildToolsByFen.history[guildId][user][event].lastWeek = gold + GuildToolsByFen.history[guildId][user][event].lastWeek        
     end
     
     -- this week
-    if (eventDate.tradeWeek == today.tradeWeek) then
+    if (eventTime >= today.tradeWeekStart and eventTime <= today.tradeWeekEnd) then
         GuildToolsByFen.history[guildId][user][event].thisWeek = gold + GuildToolsByFen.history[guildId][user][event].thisWeek
     end
     
@@ -78,10 +72,10 @@ function BankGoldTransactions.createTooltipString(guildId, displayName, timeStam
         and operation.today == 0) then
         table.insert(tooltip, langStrings[lang].noRecords)
     else
-        table.insert(tooltip, string.format(langStrings[lang].last30Days, operation.last30Days))        
-        table.insert(tooltip, string.format(langStrings[lang].lastWeek, operation.lastWeek))        
-        table.insert(tooltip, string.format(langStrings[lang].thisWeek, operation.thisWeek))        
-        table.insert(tooltip, string.format(langStrings[lang].today, operation.today))
+        table.insert(tooltip, string.format(langStrings[lang].last30Days, ZO_CommaDelimitNumber(operation.last30Days)))
+        table.insert(tooltip, string.format(langStrings[lang].lastWeek, ZO_CommaDelimitNumber(operation.lastWeek)))
+        table.insert(tooltip, string.format(langStrings[lang].thisWeek, ZO_CommaDelimitNumber(operation.thisWeek)))
+        table.insert(tooltip, string.format(langStrings[lang].today, ZO_CommaDelimitNumber(operation.today)))
     end
 
     return table.concat(tooltip, "\n")
