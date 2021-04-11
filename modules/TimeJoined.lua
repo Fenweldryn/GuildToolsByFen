@@ -18,7 +18,10 @@ function TimeJoined.createTooltipString(guildId, displayName, timeStamp)
 end
 
 function TimeJoined.storeGuildJoins(guildId, user, eventTime)
-    if(GuildToolsByFen.history[guildId][user].timeJoined ~= nil) then return end
+    -- if (user == nil) then return end  
+    -- if (guildId == nil) then return end  
+    -- if (eventTime == nil) then return end  
+    -- if(GuildToolsByFen.history[guildId][user] ~= nil) then return end
     
     GuildToolsByFen.history[guildId][user].timeJoined = eventTime    
 end

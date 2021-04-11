@@ -4,7 +4,9 @@ local langStrings = GuildToolsByFenInternals.langStrings
 local lang = GuildToolsByFenInternals.lang
 
 function BankGoldTransactions.store(guildId, user, gold, event, eventTime)  
-    
+    -- if (user == nil) then return end  
+    -- if (guildId == nil) then return end  
+
     local eventDate = os.date("*t", eventTime)
     local today = os.date("*t")
     local lastTradeWeekStart = 0

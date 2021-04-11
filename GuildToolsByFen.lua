@@ -60,14 +60,12 @@ local function SetUpLibHistoireListener(guildId, category, startTime, endTime)
     local listener = LibHistoire:CreateGuildHistoryListener(guildId, category)    
 
     listener:SetEventCallback(function(eventType, eventId, eventTime, param1, param2, param3, param4, param5, param6)              
-        if(eventType == GUILD_EVENT_GUILD_JOIN or eventType == GUILD_EVENT_BANKGOLD_ADDED) then
-            GuildToolsByFenInternals.createUser(param1, guildId)         
+        if( eventType == GUILD_EVENT_GUILD_JOIN 
+            or eventType == GUILD_EVENT_BANKGOLD_ADDED
+            or eventType == GUILD_EVENT_BANKGOLD_REMOVED ) then
             GuildToolsByFenInternals.createGuild(guildId)   
+            GuildToolsByFenInternals.createUser(param1, guildId)         
         end        
-        
-        if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then              
-            TimeJoined.storeGuildJoins(guildId, param1, eventTime)
-        end
         
         if(eventType == GUILD_EVENT_BANKGOLD_ADDED and category == GUILD_HISTORY_BANK) then                
             BankGoldTransactions.store(guildId, param1, param2, 'deposits', eventTime)                          
@@ -78,11 +76,12 @@ local function SetUpLibHistoireListener(guildId, category, startTime, endTime)
         end
         
         if(eventType == GUILD_EVENT_GUILD_JOIN and category == GUILD_HISTORY_GENERAL) then  
+            TimeJoined.storeGuildJoins(guildId, param1, eventTime)
             if( GuildToolsByFen.history[guildId].oldestEvent == nil 
                 or GuildToolsByFen.history[guildId].oldestEvent >= eventTime) then
                 GuildToolsByFen.history[guildId].oldestEvent = eventTime                    
+            end
         end
-    end
 end)
 listener:Start()
 end
